@@ -45,11 +45,15 @@
       </div>
       <p>Hora: {{ reserva.hora }}</p>
       <p>Cliente: {{ reserva.nombre }} {{ reserva.apellido }}</p>
+
+	<!--Mapa-->
       <div class="map-container">
         <p>Dirección: {{ reserva.direccion }}</p>
         <div id="map"></div>
         <button @click="showDirections(reserva.direccion)" v-on:touchstart="showDirections(reserva.direccion)">Ver cómo llegar</button>
       </div>
+	<!-- FIN Mapa-->
+	    
       <p>Perro: {{ reserva.nombre_perro }} Raza: {{ reserva.nombre_raza }}</p>
       <p>Estado: {{ reserva.estado }}</p>
       <button v-if="reserva.estado === 'Pendiente'" @click="cambiarEstado(reserva.id, 'Terminado')" :disabled="!canMarkAsCompleted(reserva)">Paseo terminado</button>
@@ -77,13 +81,13 @@ export default {
       fecha: '',
       hora: '',
       estado: '',
-      map: null,
+      map: null, // MAPA
     };
   },
   mounted() {
     this.fetchReservas();
     this.fetchNotification();
-    this.loadGoogleMapsAPI();
+    this.loadGoogleMapsAPI(); // MAPA
   },
   methods: {
     fetchReservas() {
@@ -155,6 +159,7 @@ export default {
         return `${baseUrl}/${imagePath}`;
       }
     },
+	   // MAPA
     showDirections(address) {
   const geocoder = new window.google.maps.Geocoder();
   const directionsService = new window.google.maps.DirectionsService();
@@ -190,6 +195,7 @@ export default {
     }
   });
 },
+	   // MAPA
     loadGoogleMapsAPI() {
       const googleMapsScript = document.createElement("script");
       googleMapsScript.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyAolIlSEOimzlZRcQk8CX2Zep2GMtK3HVo&libraries=places&callback=initMap`;
@@ -198,17 +204,13 @@ export default {
       googleMapsScript.onload = this.initMap; // Agrega esto para llamar a la función initMap al cargar el script
       document.head.appendChild(googleMapsScript);
     },
+	   // MAPA
     initMap() {
   // Crea una instancia del mapa y asigna la variable this.map
   this.map = new window.google.maps.Map(document.getElementById('map'), {
     center: { lat: -34.397, lng: 150.644 }, // Puedes cambiar el centro del mapa según tus necesidades
     zoom: 8, // Puedes cambiar el nivel de zoom según tus necesidades
   });
-
-  // No es necesario que coloques el código de la función showDirections() aquí, ya que esa función se ejecutará cuando el usuario haga clic en el botón "Ver cómo llegar".
-
-  // Si quieres mostrar alguna ubicación predeterminada al cargar el mapa, puedes llamar a la función showDirections() aquí con una dirección específica, por ejemplo:
-  // this.showDirections("Dirección predeterminada");
 	},
   },
   computed: {
